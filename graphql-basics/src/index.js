@@ -1,1 +1,3 @@
-console.log("Test")
+import { message } from './myModule.js'
+
+console.log(message)
