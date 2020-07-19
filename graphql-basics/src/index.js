@@ -5,31 +5,43 @@ import { GraphQLServer } from 'graphql-yoga'
 // Type definitions (schema)
 const typeDefs = `
     type Query {
+        me: User!
+        post: Post!
+    }
+
+    type User {
         id: ID!
         name: String!
-        age: Int!
-        employed: Boolean!
-        gpa: Float # returning null is fine here, no !
+        email: String!
+        age: Int
+    }
+
+    type Post {
+        id: ID! 
+        title: String!
+        body: String!
+        pubslished: Boolean!
     }
 `
 
 // Resolvers
 const resolvers = {
     Query: {
-        id() {
-            return 'abc123'
+        me () {
+            return {
+                id: "122323",
+                name: "Andre",
+                email: "a.sebastian@test.de"
+            }
         },
-        name() {
-            return 'André'
-        },
-        age() {
-            return 39
-        },
-        employed() {
-            return true
-        },
-        gpa() {
-            return null
+
+        post () {
+            return {
+                id: "87887",
+                title: "My first post",
+                body: "Very interesting post",
+                pubslished: false
+            }
         }
     }
 }
