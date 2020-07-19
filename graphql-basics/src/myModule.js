@@ -1,3 +1,9 @@
 const message = "some message"
 
-export { message }
+const location = "Berlin"
+
+const getGreeting = (name) => {
+    return `Welcome ${name}`
+}
+
+export { message, getGreeting, location as default }
