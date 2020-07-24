@@ -2,14 +2,57 @@ import { GraphQLServer } from 'graphql-yoga'
 
 // Scalar types - String, Boolean, Int, Float, ID
 
+// Demo user data
+const users = [
+    {
+        id: "1",
+        name: "André",
+        email: "a.sebastian@test.de"
+    },
+    {
+        id: "2",
+        name: "Franzi",
+        email: "franzi@test.de",
+        age: 18
+    },
+    {
+        id: "3",
+        name: "Nina",
+        email: "Nina@test.de",
+        age: 87
+    }
+]
+
+const posts = [
+    {
+        id: "10",
+        title: "My first post",
+        body: "What a life!",
+        published: true,
+        author: "1"
+    },
+    {
+        id: "20",
+        title: "My second post",
+        body: "What a nice life!",
+        published: true,
+        author: "1"
+    },
+    {
+        id: "30",
+        title: "My third post",
+        body: "What an awesome life!",
+        published: false,
+        author: "3"
+    }
+]
+
 // Type definitions (schema)
 const typeDefs = `
     type Query {
-        greeting(name: String): String!
-        add(numbers: [Float!]!): Float!
-        grades: [Int]!
+        users(query: String): [User!]!
         me: User!
-        post: Post!
+        posts(query: String): [Post]!
     }
 
     type User {
@@ -23,27 +66,22 @@ const typeDefs = `
         id: ID! 
         title: String!
         body: String!
-        pubslished: Boolean!
+        published: Boolean!
+        author: User!
     }
 `
 
 // Resolvers
 const resolvers = {
     Query: {
-        greeting(parent, args, ctx, info) {
-            return (args.name) ? `Hello, ${args.name}!`: `Hello!`
-        },
-
-        add (parent, args, ctx, info) {
-            if (args.numbers.length === 0) {
-                return 0
+        users(parent, args, ctx, info) {
+            if (!args.query) {
+                return users
             }
 
-            return args.numbers.reduce((arc, val) => arc +val )
-        },
-
-        grades(parent, args, ctx, info) {
-            return [99,80,93]
+            return users.filter((user) => {
+                return user.name.toLowerCase().includes(args.query.toLowerCase())
+            })
         },
 
         me () {
@@ -54,13 +92,21 @@ const resolvers = {
             }
         },
 
-        post () {
-            return {
-                id: "87887",
-                title: "My first post",
-                body: "Very interesting post",
-                pubslished: false
+        posts (parent, args, ctx, info) {
+            if (!args.query) {
+                return posts
             }
+
+            return posts.filter((post) => {
+                return post.title.toLowerCase().includes(args.query.toLowerCase()) || post.body.toLowerCase().includes(args.query.toLowerCase())
+            })
+        }
+    },
+    Post: {
+        author (parent, args, ctx, info) {
+            return users.find((user)=> {
+                return user.id === parent.author
+            })
         }
     }
 }
