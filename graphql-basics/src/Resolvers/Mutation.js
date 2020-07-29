@@ -75,8 +75,12 @@ const Mutation = {
         }
 
         db.posts.push(post)
-        if (post.published) pubsub.publish('post', { post } )
-        console.log("createPost -> post", post)
+        if (post.published) pubsub.publish('post', { 
+            post: {
+                mutation: 'CREATED',
+                data: post
+            }
+        })
         return post
     },
     deletePost(parent, args, { db }, info) {
