@@ -8,6 +8,7 @@
     "babel-preset-env": "^1.7.0",
     "graphql": "^14.7.0",
     "graphql-yoga": "^1.16.7",
+    "prisma-binding": "^2.3.16",
     "uuid": "^8.3.0"
   },
   "devDependencies": {
@@ -16,7 +17,8 @@
   },
   "scripts": {
     "start": "nodemon src/index.js --ext js,graphql --exec babel-node",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "get-schema": "graphql get-schema -p prisma"
   },
   "author": "",
   "license": "ISC"
