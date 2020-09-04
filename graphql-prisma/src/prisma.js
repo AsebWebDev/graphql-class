@@ -41,42 +41,42 @@ const prisma = new Prisma({
 //     .then((data) => console.log(JSON.stringify(data, null, 2)))
     // .catch((error) => console.log(error))
 
-const createPostForUser = async (authorId, data) => {
-    const post = await prisma.mutation.createPost({
-        data: { 
-            ...data,
-            author: { 
-                connect: { 
-                    id: authorId
-                }
-            }
-        }
-    }, `{ id }`)
+// const createPostForUser = async (authorId, data) => {
+//     const userExists = await prisma.exists.User({ id: authorId})
 
-    const user = await prisma.query.user({
-        where: { id: authorId }
-    }, '{ id name email posts { id title published } }')
+//     if (!userExists) throw new Error('User does not exist.')
+        
+//     const post = await prisma.mutation.createPost({
+//         data: { 
+//             ...data,
+//             author: { 
+//                 connect: { 
+//                     id: authorId
+//                 }
+//             }
+//         }
+//     }, `{ author { id name email posts { id title published }}}`)
 
-    return user
-}
+//     return post.author
+// }
 
 const updatePostForUser = async ( postId, data) => {
+    const postExists = await prisma.exists.Post({ id: postId })
+
+    if (!postExists)  throw new Error('Post does not exist')
+    
     const post = await prisma.mutation.updatePost({
         data,
         where: {
             id: postId
         }
-    }, '{ author { id } }')
+    }, '{ author { id name email posts { id title published } } }')
 
-    const user = await prisma.query.user({
-        where: { id: post.author.id }
-    }, '{ id name email posts { id title published } }')
-
-    return user
+    return post.author
 }
 
 updatePostForUser('ckdsg3x9v005w0875n4o29dps', {
-    title: 'WoW wow 3000!'
+    title: 'WoW wow 2000!'
 }).then(data => console.log(JSON.stringify(data, null, 2)))
 .catch(error => console.log(error))
 
@@ -85,3 +85,4 @@ updatePostForUser('ckdsg3x9v005w0875n4o29dps', {
 //     body: "Its art", 
 //     published: true
 // }).then ( user => console.log(JSON.stringify(user, null, 2)))
+// .catch(err => console.log(err.message))
