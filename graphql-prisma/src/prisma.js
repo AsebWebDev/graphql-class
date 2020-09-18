@@ -5,6 +5,8 @@ const prisma = new Prisma({
     endpoint: 'http://localhost:4466'
 }) 
 
+export { prisma as default } 
+
 // prisma.mutation.createPost({
 //     data: {
 //         title: 'My new post 2000',
@@ -60,25 +62,25 @@ const prisma = new Prisma({
 //     return post.author
 // }
 
-const updatePostForUser = async ( postId, data) => {
-    const postExists = await prisma.exists.Post({ id: postId })
+// const updatePostForUser = async ( postId, data) => {
+//     const postExists = await prisma.exists.Post({ id: postId })
 
-    if (!postExists)  throw new Error('Post does not exist')
+//     if (!postExists)  throw new Error('Post does not exist')
     
-    const post = await prisma.mutation.updatePost({
-        data,
-        where: {
-            id: postId
-        }
-    }, '{ author { id name email posts { id title published } } }')
+//     const post = await prisma.mutation.updatePost({
+//         data,
+//         where: {
+//             id: postId
+//         }
+//     }, '{ author { id name email posts { id title published } } }')
 
-    return post.author
-}
+//     return post.author
+// }
 
-updatePostForUser('ckdsg3x9v005w0875n4o29dps', {
-    title: 'WoW wow 2000!'
-}).then(data => console.log(JSON.stringify(data, null, 2)))
-.catch(error => console.log(error))
+// updatePostForUser('ckdsg3x9v005w0875n4o29dps', {
+//     title: 'WoW wow 2000!'
+// }).then(data => console.log(JSON.stringify(data, null, 2)))
+// .catch(error => console.log(error))
 
 // createPostForUser('ckdlss4my00af0875x2qvxnh7', {
 //     title: "Wow, it worked", 
