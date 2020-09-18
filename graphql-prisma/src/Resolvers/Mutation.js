@@ -1,44 +1,33 @@
+import { printIntrospectionSchema } from 'graphql';
 import { v4 as uuidv4 } from 'uuid';
 
 const Mutation = {
-    createUser(parent, args, { db }, info) {
-        const emailTaken = db.users.some((user) => user.email === args.data.email)
+    async createUser(parent, args, { prisma }, info) {
+        const emailTaken = await prisma.exists.User({ email: args.data.email})
 
         if (emailTaken) {
             throw new Error('Email taken')
         }
-        
-        const user = {
-            id: uuidv4(),
-            ...args.data
-        }
 
-        db.users.push(user)
+        return await prisma.mutation.createUser({
+            data: args.data
+        }, info)
 
-        return user
     },
-    deleteUser(parent, args, { db }, info) {
-        const userIndex = db.users.findIndex((user) => user.id === args.id)
+    async deleteUser(parent, args, { prisma }, info) {
+        const userExists = await prisma.exists.User({ id: args.id  })
 
-        if (userIndex === -1) {
+        try {
+            return await prisma.mutation.deleteUser( { 
+                where: { id: args.id }
+            }, info) 
+        } 
+        
+        catch (e){
             throw new Error('User not found')
         }
-
-        const deletedUsers = db.users.splice(userIndex, 1)
-
-        db.posts = db.posts.filter((post) => {
-            const match = post.author === args.id
-
-            if (match) {
-                comments = comments.filter((comment) => comment.post !== post.id)
-            }
-
-            return !match
-        })
-            db.comments = db.comments.filter((comment) => comment.author !== args.id)
-
-        return deletedUsers[0]
     },
+    
     updateUser(parent, args, { db }, info) {
         const {id, data } = args
         const user = db.users.find((user) => user.id === id)
