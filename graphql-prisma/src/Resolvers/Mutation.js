@@ -1,10 +1,19 @@
-import { printIntrospectionSchema } from 'graphql';
-import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcryptjs'
 
 const Mutation = {
     async createUser(parent, args, { prisma }, info) {
+        if (args.data.password.length < 8) {
+            throw new Error("Password must be 8 characters or longer")
+        }
+
+        const password = await bcrypt.hash(args.data.password, 10)
+
         return await prisma.mutation.createUser({
-            data: args.data
+            data: {
+                ...args.data, 
+                password //overwriting with hashed version
+            }
+
         }, info)
 
     },
