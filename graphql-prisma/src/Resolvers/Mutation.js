@@ -66,22 +66,13 @@ const Mutation = {
             }
         }, info)
     },
-    deleteComment(parent, args, { db, pubsub }, info) {
-        const commentIndex = db.comments.findIndex((comment) => comment.id === args.id)
-
-        if (commentIndex === -1) {
-            throw new Error('Comment not found')
-        }
-
-        const [comment] = db.comments.splice(commentIndex, 1)
-        db.comments = db.comments.filter((comment) => comment.comment !== args.id)
-        pubsub.publish(`comment ${args.id}`, { 
-            comment: {
-                mutation: 'DELETED',
-                data: comment
+    deleteComment(parent, args, { prisma }, info) {
+        console.log("deleteComment -> args", args)
+        return prisma.mutation.deleteComment({
+            where: { 
+                    id: args.id
             }
-         })
-        return comment
+        }, info)
     },
     async updateComment(parent, args, { prisma }, info) {
         return prisma.mutation.updateComment({
