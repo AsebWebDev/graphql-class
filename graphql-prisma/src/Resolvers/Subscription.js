@@ -5,7 +5,7 @@ const Subscription = {
                 where: {
                     node: {
                         post: {
-                            id: postId  
+                            id: postId
                         }
                     }
                 }

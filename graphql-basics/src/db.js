@@ -55,6 +55,10 @@ const comments = [{
     post: '12'
 }]
 
-const db = {users, posts, comments}
+const db = {
+    users,
+    posts,
+    comments
+}
 
-export { db as default}
+export { db as default }

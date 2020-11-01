@@ -8,7 +8,6 @@ const Mutation = {
         }
 
         const password = await bcrypt.hash(args.data.password, 10)
-        console.log("createUser -> password", password)
         const user = await prisma.mutation.createUser({
             data: {
                 ...args.data,
@@ -33,10 +32,7 @@ const Mutation = {
             throw new Error('Unable to login')
         }
 
-        console.log("login -> user.password", user.password)
-
         const isMatch = await bcrypt.compare(args.data.password, user.password)
-        
 
         if (!isMatch) {
             throw new Error('Unable to login')
